@@ -22,9 +22,7 @@ return new class extends Migration
             $table->integer('branch_id')->nullable();
             $table->boolean('active')->default(true);
             $table->dateTime('created_at')->useCurrent();
-            $table->dateTime('updated_at')->useCurrent()->useCurrentOnUpdate();
-            $table->integer('sync_status')->default(1); // 1: pending, 2: synced           
-            $table->dateTime('last_sync')->nullable();            
+            $table->dateTime('updated_at')->useCurrent()->useCurrentOnUpdate();                   
         });
     }
 

@@ -9,7 +9,7 @@ class Layaway extends Model
     protected $fillable = [
         'folio', 'customer_id', 'branch_id', 'user_id', 'delivery_user_id',
         'total', 'total_paid', 'layaway_date', 'pickup_date', 'delivery_date',
-        'status', 'notes', 'ticket_data', 'sync_status', 'last_sync'
+        'status', 'notes', 'ticket_data'
     ];
 
     public function customer()

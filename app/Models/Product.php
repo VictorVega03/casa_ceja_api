@@ -9,7 +9,7 @@ class Product extends Model
     protected $fillable = [
         'barcode', 'name', 'category_id', 'unit_id', 'presentation',
         'iva', 'price_retail', 'price_wholesale', 'wholesale_quantity',
-        'price_special', 'price_dealer', 'active', 'sync_status', 'last_sync'
+        'price_special', 'price_dealer', 'active'
     ];
 
     public function category()

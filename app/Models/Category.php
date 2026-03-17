@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
    protected $fillable = [
-        'name', 'discount', 'has_discount',
-        'active', 'sync_status', 'last_sync'
+        'name', 'discount', 'has_discount', 'active'
     ];
 
     public function products()

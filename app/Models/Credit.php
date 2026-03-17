@@ -8,8 +8,7 @@ class Credit extends Model
 {
     protected $fillable = [
         'folio', 'customer_id', 'branch_id', 'user_id', 'total', 'total_paid',
-        'months_to_pay', 'credit_date', 'due_date', 'status',
-        'notes', 'ticket_data', 'sync_status', 'last_sync'
+        'months_to_pay', 'credit_date', 'due_date', 'status', 'notes', 'ticket_data'
     ];
 
     public function customer()

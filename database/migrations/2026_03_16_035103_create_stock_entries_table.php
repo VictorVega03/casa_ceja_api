@@ -22,8 +22,7 @@ return new class extends Migration
             $table->string('notes', 500)->nullable();
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->useCurrent()->useCurrentOnUpdate();           
-            $table->integer('sync_status')->default(1);
-            $table->timestamp('last_sync')->nullable();            
+                       
         });
     }
 

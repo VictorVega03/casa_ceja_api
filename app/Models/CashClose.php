@@ -11,7 +11,7 @@ class CashClose extends Model
         'total_debit_card', 'total_credit_card', 'total_checks', 'total_transfers',
         'layaway_cash', 'credit_cash', 'credit_total_created', 'layaway_total_created',
         'expenses', 'income', 'surplus', 'expected_cash', 'total_sales',
-        'notes', 'opening_date', 'close_date', 'sync_status', 'last_sync'
+        'notes', 'opening_date', 'close_date'
     ];
 
     public function movements()

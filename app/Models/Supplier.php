@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Supplier extends Model
 {
     protected $fillable = [
-        'name', 'phone', 'email', 'address',
-        'active', 'sync_status', 'last_sync'
+        'name', 'phone', 'email', 'address', 'active'
     ];
 
     public function stockEntries()

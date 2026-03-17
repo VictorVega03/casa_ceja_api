@@ -8,7 +8,7 @@ class StockOutput extends Model
 {
     protected $fillable = [
         'folio', 'origin_branch_id', 'destination_branch_id', 'user_id',
-        'total_amount', 'output_date', 'notes', 'sync_status', 'last_sync'
+        'total_amount', 'output_date', 'notes'
     ];
 
     public function originBranch()

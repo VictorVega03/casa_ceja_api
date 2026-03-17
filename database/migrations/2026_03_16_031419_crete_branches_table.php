@@ -17,9 +17,7 @@ return new class extends Migration
             $table->string('address', 255)->nullable();
             $table->string('email', 40)->nullable();
             $table->string('razon_social', 100)->nullable();
-            $table->boolean('active')->default(true);
-            $table->integer('sync_status')->default(1);
-            $table->timestamp('last_sync')->nullable();
+            $table->boolean('active')->default(true);            
             $table->timestamps();
         });
     }

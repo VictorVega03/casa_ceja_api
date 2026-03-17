@@ -27,8 +27,7 @@ return new class extends Migration
             $table->timestamp('sale_date')->nullable();
             $table->dateTime('created_at')->useCurrent();
             $table->string('cash_close_folio', 50)->nullable();
-            $table->integer('sync_status')->default(1);
-            $table->timestamp('last_sync')->nullable();            
+                       
         });
     }
 
