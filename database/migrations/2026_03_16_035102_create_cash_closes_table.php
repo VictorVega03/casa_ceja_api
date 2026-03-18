@@ -6,14 +6,11 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-      Schema::create('cash_closes', function (Blueprint $table) {
+        Schema::create('cash_closes', function (Blueprint $table) {
             $table->id();
-            $table->string('folio', 50)->nullable();
+            $table->string('folio', 50)->nullable()->index();
             $table->integer('branch_id')->nullable();
             $table->integer('user_id')->nullable();
             $table->float('opening_cash')->default(0);
@@ -33,15 +30,11 @@ return new class extends Migration
             $table->float('total_sales')->default(0);
             $table->text('notes')->nullable();
             $table->timestamp('opening_date')->nullable();
-            $table->timestamp('close_date')->nullable();
-            $table->dateTime('created_at')->useCurrent();
-            $table->dateTime('updated_at')->useCurrent()->useCurrentOnUpdate();                  
+            $table->timestamp('close_date')->nullable()->index();
+            $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('cash_closes');

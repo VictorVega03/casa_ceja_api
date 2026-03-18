@@ -6,29 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('stock_entries', function (Blueprint $table) {
             $table->id();
             $table->string('folio', 50)->unique()->nullable();
-            $table->integer('branch_id')->nullable();
-            $table->integer('supplier_id')->nullable();
-            $table->integer('user_id')->nullable();
-            $table->float('total_cost')->default(0);
-            $table->timestamp('entry_date')->nullable();
-            $table->string('notes', 500)->nullable();
-            $table->dateTime('created_at')->useCurrent();
-            $table->dateTime('updated_at')->useCurrent()->useCurrentOnUpdate();           
-                       
+            $table->string('folio_output', 50)->nullable();
+            $table->integer('branch_id')->nullable()->index();
+            $table->integer('supplier_id')->nullable()->index();
+            $table->integer('user_id')->nullable()->index();
+            $table->float('total_amount')->default(0);
+            $table->timestamp('entry_date')->nullable()->index();
+            $table->text('notes')->nullable();
+            $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('stock_entries');

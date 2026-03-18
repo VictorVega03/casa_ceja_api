@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('layaways', function (Blueprint $table) {
@@ -23,18 +20,13 @@ return new class extends Migration
             $table->timestamp('layaway_date')->nullable();
             $table->timestamp('pickup_date')->nullable();
             $table->timestamp('delivery_date')->nullable();
-            $table->integer('status')->default(0);
+            $table->integer('status')->default(1);
             $table->string('notes', 500)->nullable();
             $table->binary('ticket_data')->nullable();
-            $table->dateTime('created_at')->useCurrent();
-            $table->dateTime('updated_at')->useCurrent()->useCurrentOnUpdate();           
-                       
+            $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('layaways');
