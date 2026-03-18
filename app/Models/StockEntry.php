@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class StockEntry extends Model
 {
     protected $fillable = [
-        'folio', 'branch_id', 'supplier_id', 'user_id',
-        'total_cost', 'entry_date', 'notes'
+        'folio', 'folio_output', 'branch_id', 'supplier_id', 'user_id',
+        'total_amount', 'entry_date', 'notes'
     ];
 
     public function branch()

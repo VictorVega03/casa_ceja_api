@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('stock_outputs', function (Blueprint $table) {
             $table->id();
             $table->string('folio', 50)->unique()->nullable();
-            $table->integer('branch_id')->nullable()->index();
+            $table->integer('origin_branch_id')->nullable()->index();
             $table->integer('destination_branch_id')->nullable()->index();
             $table->integer('user_id')->nullable()->index();
             $table->string('type', 20)->default('OTHER');
