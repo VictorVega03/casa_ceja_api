@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Admin\BranchController;
 use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Admin\CustomerController;
@@ -25,8 +26,11 @@ Route::get('/v1/health', function () {
     ]);
 });
 
-// ── Rutas protegidas por token de sucursal ───────────────────
-Route::prefix('v1')->middleware('branch.token')->group(function () {
+// ── Login (sin autenticación) ────────────────────────────────
+Route::post('/v1/auth/login', [AuthController::class, 'login']);
+
+// ── Rutas protegidas por token de usuario ────────────────────
+Route::prefix('v1')->middleware('user.token')->group(function () {
 
     // ── PULL — cliente jala datos del servidor ───────────────
     Route::prefix('sync/pull')->group(function () {
@@ -61,10 +65,10 @@ Route::prefix('v1')->middleware('branch.token')->group(function () {
 
     // ── ON-DEMAND — consultas en tiempo real ─────────────────
     Route::prefix('stock')->group(function () {
-        Route::get('/product/{barcode}',                                    [StockController::class, 'byProduct']);
-        Route::get('/branch/{branchId}',                                    [StockController::class, 'byBranch']);
-        Route::put('/branch/{branchId}/product/{productId}/add',            [StockController::class, 'addStock']);
-        Route::put('/branch/{branchId}/product/{productId}/subtract',       [StockController::class, 'subtractStock']);
+        Route::get('/product/{barcode}',                                [StockController::class, 'byProduct']);
+        Route::get('/branch/{branchId}',                                [StockController::class, 'byBranch']);
+        Route::put('/branch/{branchId}/product/{productId}/add',        [StockController::class, 'addStock']);
+        Route::put('/branch/{branchId}/product/{productId}/subtract',   [StockController::class, 'subtractStock']);
     });
 
     // ── ADMIN — gestión de catálogos ─────────────────────────
@@ -82,9 +86,7 @@ Route::prefix('v1')->middleware('branch.token')->group(function () {
         Route::get('roles', [RoleController::class, 'index']);
 
         Route::get('tokens',                        [TokenController::class, 'index']);
-        Route::post('tokens',                       [TokenController::class, 'store']);
-        Route::patch('tokens/{branchToken}/toggle', [TokenController::class, 'toggle']);
-        Route::delete('tokens/{branchToken}',       [TokenController::class, 'destroy']);
+        Route::delete('tokens/{userToken}',       [TokenController::class, 'destroy']);
 
         Route::get('reports/sales',         [ReportController::class, 'sales']);
         Route::get('reports/cash-closes',   [ReportController::class, 'cashCloses']);
