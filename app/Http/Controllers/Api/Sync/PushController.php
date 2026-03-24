@@ -82,7 +82,7 @@ class PushController extends Controller
         $records   = $request->input('records', []);
 
         if (!$branchId) {
-            return $this->error('Token inválido', 401);
+            return $this->error('branch_id requerido', 422);
         }
 
         if (empty($records)) {
