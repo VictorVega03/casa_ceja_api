@@ -12,6 +12,10 @@ class Product extends Model
         'price_special', 'price_dealer', 'active'
     ];
 
+    protected $casts = [
+        'active' => 'boolean',
+    ];
+
     public function category()
     {
         return $this->belongsTo(Category::class);

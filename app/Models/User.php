@@ -11,6 +11,10 @@ class User extends Authenticatable
         'user_type', 'branch_id', 'active'
     ];
 
+    protected $casts = [
+        'active' => 'boolean',
+    ];
+
     protected $hidden = [
         'password'
     ];

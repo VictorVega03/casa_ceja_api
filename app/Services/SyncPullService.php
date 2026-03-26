@@ -34,7 +34,7 @@ class SyncPullService
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
 
         return [
-            'records'      => $paginated->items(),
+            'data'         => $paginated->items(),
             'count'        => $paginated->count(),
             'total'        => $paginated->total(),
             'current_page' => $paginated->currentPage(),
@@ -58,7 +58,7 @@ class SyncPullService
         ], 'page', $page);
 
         return [
-            'records'      => $paginated->items(),
+            'data'         => $paginated->items(),
             'count'        => $paginated->count(),
             'total'        => $paginated->total(),
             'current_page' => $paginated->currentPage(),
@@ -80,7 +80,7 @@ class SyncPullService
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
 
         return [
-            'records'      => $paginated->items(),
+            'data'         => $paginated->items(),
             'count'        => $paginated->count(),
             'total'        => $paginated->total(),
             'current_page' => $paginated->currentPage(),
@@ -100,7 +100,7 @@ class SyncPullService
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
 
         return [
-            'records'      => $paginated->items(),
+            'data'         => $paginated->items(),
             'count'        => $paginated->count(),
             'total'        => $paginated->total(),
             'current_page' => $paginated->currentPage(),
@@ -120,7 +120,7 @@ class SyncPullService
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
 
         return [
-            'records'      => $paginated->items(),
+            'data'         => $paginated->items(),
             'count'        => $paginated->count(),
             'total'        => $paginated->total(),
             'current_page' => $paginated->currentPage(),
@@ -139,7 +139,7 @@ class SyncPullService
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
 
         return [
-            'records'      => $paginated->items(),
+            'data'         => $paginated->items(),
             'count'        => $paginated->count(),
             'total'        => $paginated->total(),
             'current_page' => $paginated->currentPage(),
@@ -159,7 +159,7 @@ class SyncPullService
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
 
         return [
-            'records'      => $paginated->items(),
+            'data'         => $paginated->items(),
             'count'        => $paginated->count(),
             'total'        => $paginated->total(),
             'current_page' => $paginated->currentPage(),
@@ -179,7 +179,7 @@ class SyncPullService
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
 
         return [
-            'records'      => $paginated->items(),
+            'data'         => $paginated->items(),
             'count'        => $paginated->count(),
             'total'        => $paginated->total(),
             'current_page' => $paginated->currentPage(),
@@ -198,7 +198,7 @@ class SyncPullService
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
 
         return [
-            'records'      => $paginated->items(),
+            'data'         => $paginated->items(),
             'count'        => $paginated->count(),
             'total'        => $paginated->total(),
             'current_page' => $paginated->currentPage(),
@@ -218,7 +218,7 @@ class SyncPullService
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
 
         return [
-            'records'      => $paginated->items(),
+            'data'         => $paginated->items(),
             'count'        => $paginated->count(),
             'total'        => $paginated->total(),
             'current_page' => $paginated->currentPage(),
@@ -237,7 +237,7 @@ class SyncPullService
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
 
         return [
-            'records'      => $paginated->items(),
+            'data'         => $paginated->items(),
             'count'        => $paginated->count(),
             'total'        => $paginated->total(),
             'current_page' => $paginated->currentPage(),

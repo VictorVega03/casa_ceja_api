@@ -141,7 +141,8 @@ class PullController extends Controller
     private function handlePull(Request $request, string $entity, callable $fetcher)
     {
         $startTime = microtime(true);
-        $branchId  = $request->input('branch_id');
+        $authUser  = $request->input('auth_user');
+        $branchId  = $authUser?->branch_id ?? 0;
         $since     = (int) $request->query('since', 0);
         $page      = (int) $request->query('page', 1);
 

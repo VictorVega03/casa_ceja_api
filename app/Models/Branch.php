@@ -10,6 +10,10 @@ class Branch extends Model
         'name', 'address', 'email', 'razon_social', 'active'
     ];
 
+    protected $casts = [
+        'active' => 'boolean',
+    ];
+
     public function users()
     {
         return $this->hasMany(User::class);

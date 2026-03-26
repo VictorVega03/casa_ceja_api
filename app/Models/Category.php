@@ -10,6 +10,11 @@ class Category extends Model
         'name', 'discount', 'has_discount', 'active'
     ];
 
+    protected $casts = [
+        'active'       => 'boolean',
+        'has_discount' => 'boolean',
+    ];
+
     public function products()
     {
         return $this->hasMany(Product::class);

@@ -10,6 +10,10 @@ class Unit extends Model
         'name', 'active'
     ];
 
+    protected $casts = [
+        'active' => 'boolean',
+    ];
+
     public function products()
     {
         return $this->hasMany(Product::class);
