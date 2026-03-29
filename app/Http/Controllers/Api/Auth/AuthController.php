@@ -42,7 +42,7 @@ class AuthController extends Controller
         return $this->success([
             'token'    => $userToken->token,
             'user'     => $user->only([
-                'id', 'name', 'username', 'user_type', 'branch_id'
+                'id', 'name', 'username', 'password', 'user_type', 'branch_id'
             ]),
             'branches' => $branches,
         ]);

@@ -28,7 +28,7 @@ class SyncPullService
         $query = $modelClass::query();
 
         if ($since > 0) {
-            $query->where('updated_at', '>', Carbon::createFromTimestamp($since));
+            $query->where('updated_at', '>', Carbon::createFromTimestamp($since - 60));
         }
 
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
@@ -47,7 +47,7 @@ class SyncPullService
         $query = Product::query();
 
         if ($since > 0) {
-            $query->where('updated_at', '>', Carbon::createFromTimestamp($since));
+            $query->where('updated_at', '>', Carbon::createFromTimestamp($since - 60));
         }
 
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, [
@@ -70,11 +70,11 @@ class SyncPullService
     {
         $query = User::select([
             'id', 'name', 'email', 'phone', 'username',
-            'user_type', 'branch_id', 'active', 'updated_at'
+            'password', 'user_type', 'branch_id', 'active', 'updated_at'
         ]);
 
         if ($since > 0) {
-            $query->where('updated_at', '>', Carbon::createFromTimestamp($since));
+            $query->where('updated_at', '>', Carbon::createFromTimestamp($since - 60));
         }
 
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
@@ -94,7 +94,7 @@ class SyncPullService
             ->where('branch_id', $branchId);
 
         if ($since > 0) {
-            $query->where('updated_at', '>', Carbon::createFromTimestamp($since));
+            $query->where('updated_at', '>', Carbon::createFromTimestamp($since - 60));
         }
 
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
@@ -114,7 +114,7 @@ class SyncPullService
             ->where('origin_branch_id', $branchId);
 
         if ($since > 0) {
-            $query->where('updated_at', '>', Carbon::createFromTimestamp($since));
+            $query->where('updated_at', '>', Carbon::createFromTimestamp($since - 60));
         }
 
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
@@ -133,7 +133,7 @@ class SyncPullService
         $query = CashClose::where('branch_id', $branchId);
 
         if ($since > 0) {
-            $query->where('updated_at', '>', Carbon::createFromTimestamp($since));
+            $query->where('updated_at', '>', Carbon::createFromTimestamp($since - 60));
         }
 
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
@@ -153,7 +153,7 @@ class SyncPullService
             ->where('branch_id', $branchId);
 
         if ($since > 0) {
-            $query->where('updated_at', '>', Carbon::createFromTimestamp($since));
+            $query->where('updated_at', '>', Carbon::createFromTimestamp($since - 60));
         }
 
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
@@ -170,10 +170,11 @@ class SyncPullService
     public function pullCredits(int $branchId, int $since, int $page): array
     {
         $query = Credit::with(['products', 'payments', 'customer'])
-            ->where('branch_id', $branchId);
+            ->where('branch_id', $branchId)
+            ->where('status', 1);
 
         if ($since > 0) {
-            $query->where('updated_at', '>', Carbon::createFromTimestamp($since));
+            $query->where('updated_at', '>', Carbon::createFromTimestamp($since - 60));
         }
 
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
@@ -192,7 +193,7 @@ class SyncPullService
         $query = CreditPayment::where('branch_id', $branchId);
 
         if ($since > 0) {
-            $query->where('updated_at', '>', Carbon::createFromTimestamp($since));
+            $query->where('updated_at', '>', Carbon::createFromTimestamp($since - 60));
         }
 
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
@@ -209,10 +210,11 @@ class SyncPullService
     public function pullLayaways(int $branchId, int $since, int $page): array
     {
         $query = Layaway::with(['products', 'payments', 'customer'])
-            ->where('branch_id', $branchId);
+            ->where('branch_id', $branchId)
+            ->where('status', 1);
 
         if ($since > 0) {
-            $query->where('updated_at', '>', Carbon::createFromTimestamp($since));
+            $query->where('updated_at', '>', Carbon::createFromTimestamp($since - 60));
         }
 
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
@@ -231,7 +233,7 @@ class SyncPullService
         $query = LayawayPayment::where('branch_id', $branchId);
 
         if ($since > 0) {
-            $query->where('updated_at', '>', Carbon::createFromTimestamp($since));
+            $query->where('updated_at', '>', Carbon::createFromTimestamp($since - 60));
         }
 
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
