@@ -12,7 +12,9 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'active' => 'boolean',
+        'active'     => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     protected $hidden = [

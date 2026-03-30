@@ -14,6 +14,11 @@ class CashClose extends Model
         'notes', 'opening_date', 'close_date'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function movements()
     {
         return $this->hasMany(CashMovement::class);

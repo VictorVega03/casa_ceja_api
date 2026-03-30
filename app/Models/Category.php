@@ -13,6 +13,8 @@ class Category extends Model
     protected $casts = [
         'active'       => 'boolean',
         'has_discount' => 'boolean',
+        'created_at'   => 'datetime',
+        'updated_at'   => 'datetime',
     ];
 
     public function products()

@@ -11,7 +11,9 @@ class Branch extends Model
     ];
 
     protected $casts = [
-        'active' => 'boolean',
+        'active'     => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function users()

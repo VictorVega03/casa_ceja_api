@@ -12,6 +12,11 @@ class LayawayPayment extends Model
         'cash_close_folio', 'notes'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function layaway()
     {
         return $this->belongsTo(Layaway::class);

@@ -11,6 +11,11 @@ class StockOutput extends Model
         'type', 'total_amount', 'output_date', 'notes'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function originBranch()
     {
         return $this->belongsTo(Branch::class, 'origin_branch_id');

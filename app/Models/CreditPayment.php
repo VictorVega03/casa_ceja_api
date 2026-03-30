@@ -12,6 +12,11 @@ class CreditPayment extends Model
         'cash_close_folio', 'notes'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function credit()
     {
         return $this->belongsTo(Credit::class);

@@ -11,6 +11,11 @@ class StockEntry extends Model
         'total_amount', 'entry_date', 'notes'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function branch()
     {
         return $this->belongsTo(Branch::class);

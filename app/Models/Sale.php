@@ -12,6 +12,11 @@ class Sale extends Model
         'payment_summary', 'ticket_data', 'sale_date', 'cash_close_folio'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function products()
     {
         return $this->hasMany(SaleProduct::class);

@@ -11,6 +11,11 @@ class Customer extends Model
         'neighborhood', 'postal_code', 'city', 'email', 'phone', 'active'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function credits()
     {
         return $this->hasMany(Credit::class);

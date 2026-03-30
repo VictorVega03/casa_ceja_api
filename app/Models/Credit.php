@@ -12,6 +12,11 @@ class Credit extends Model
         'credit_date', 'due_date', 'status', 'notes', 'ticket_data'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);
