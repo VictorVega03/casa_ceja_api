@@ -377,6 +377,56 @@ class SyncPushService
         });
     }
 
+    public function processCustomers(array $records): array
+    {
+        return $this->processBatch($records, function ($record) {
+            if (empty($record['folio'])) {
+                return ['status' => 'rejected', 'folio' => 'unknown', 'reason' => 'Folio requerido'];
+            }
+
+            $existing = Customer::where('id', $record['id'] ?? 0)->first();
+
+            if ($existing) {
+                $existing->update([
+                    'name'            => $record['name']            ?? $existing->name,
+                    'rfc'             => $record['rfc']             ?? $existing->rfc,
+                    'street'          => $record['street']          ?? $existing->street,
+                    'exterior_number' => $record['exterior_number'] ?? $existing->exterior_number,
+                    'interior_number' => $record['interior_number'] ?? $existing->interior_number,
+                    'neighborhood'    => $record['neighborhood']    ?? $existing->neighborhood,
+                    'postal_code'     => $record['postal_code']     ?? $existing->postal_code,
+                    'city'            => $record['city']            ?? $existing->city,
+                    'email'           => $record['email']           ?? $existing->email,
+                    'phone'           => $record['phone']           ?? $existing->phone,
+                    'active'          => $record['active']          ?? $existing->active,
+                ]);
+
+                return ['status' => 'accepted',
+                'folio' => $record['folio'], 
+                'server_id' => $existing->id];
+            }
+
+            $customer = Customer::create([
+                'name'            => $record['name']            ?? '',
+                'rfc'             => $record['rfc']             ?? null,
+                'street'          => $record['street']          ?? null,
+                'exterior_number' => $record['exterior_number'] ?? null,
+                'interior_number' => $record['interior_number'] ?? null,
+                'neighborhood'    => $record['neighborhood']    ?? null,
+                'postal_code'     => $record['postal_code']     ?? null,
+                'city'            => $record['city']            ?? null,
+                'email'           => $record['email']           ?? null,
+                'phone'           => $record['phone']           ?? null,
+                'active'          => $record['active']          ?? true,
+            ]);
+
+            return [
+                'status' => 'accepted', 
+                'folio' => $record['folio'], 
+                'server_id' => $customer->id];
+        });
+    }
+
     private function ensureCustomer(array $customerData): int
     {
         if (!empty($customerData['id'])) {
@@ -418,7 +468,14 @@ class SyncPushService
                 });
 
                 if ($result['status'] === 'accepted') {
-                    $accepted[] = $result['folio'];
+                    if (array_key_exists('server_id', $result)) {
+                        $accepted[] = [
+                            'folio'     => $result['folio'],
+                            'server_id' => $result['server_id'],
+                        ];
+                    } else {
+                        $accepted[] = $result['folio'];
+                    }
                 } else {
                     $rejected[] = ['folio' => $result['folio'], 'reason' => $result['reason'] ?? 'Rechazado'];
                 }

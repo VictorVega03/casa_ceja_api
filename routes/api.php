@@ -55,6 +55,7 @@ Route::prefix('v1')->middleware('user.token')->group(function () {
     Route::prefix('sync/push')->group(function () {
         Route::post('/sales',            [PushController::class, 'sales']);
         Route::post('/cash-closes',      [PushController::class, 'cashCloses']);
+        Route::post('/customers',        [PushController::class, 'customers']);
         Route::post('/credits',          [PushController::class, 'credits']);
         Route::post('/credit-payments',  [PushController::class, 'creditPayments']);
         Route::post('/layaways',         [PushController::class, 'layaways']);
