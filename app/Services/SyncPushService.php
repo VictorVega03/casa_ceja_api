@@ -235,7 +235,20 @@ class SyncPushService
                 return ['status' => 'rejected', 'folio' => 'unknown', 'reason' => 'Folio requerido'];
             }
 
-            if (Layaway::where('folio', $record['folio'])->exists()) {
+            $existing = Layaway::where('folio', $record['folio'])->first();
+            if ($existing) {
+                // Actualizar campos mutables — igual que processCredits
+                $existing->update([
+                    'status'           => $record['status']           ?? $existing->status,
+                    'total_paid'       => $record['total_paid']       ?? $existing->total_paid,
+                    'delivery_user_id' => $record['delivery_user_id'] ?? $existing->delivery_user_id,
+                    'delivery_date'    => !empty($record['delivery_date'])
+                                            ? $this->parseTimestamp($record['delivery_date'])
+                                            : $existing->delivery_date,
+                    'pickup_date'      => !empty($record['pickup_date'])
+                                            ? $this->parseTimestamp($record['pickup_date'])
+                                            : $existing->pickup_date,
+                ]);
                 return ['status' => 'accepted', 'folio' => $record['folio']];
             }
 
@@ -246,7 +259,7 @@ class SyncPushService
                 'delivery_user_id' => $record['delivery_user_id'] ?? null,
                 'customer_id'      => !empty($record['customer'])
                     ? $this->ensureCustomer($record['customer'])
-                    : null,
+                    : ($record['customer_id'] ?? null),
                 'total'            => $record['total'] ?? 0,
                 'total_paid'       => $record['total_paid'] ?? 0,
                 'layaway_date'     => $this->parseTimestamp($record['layaway_date']),
