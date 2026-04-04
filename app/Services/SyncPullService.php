@@ -169,7 +169,7 @@ class SyncPullService
 
     public function pullCredits(int $branchId, int $since, int $page): array
     {
-        // Actualizar vencidos antes de responder
+        // Marcar vencidos antes de responder
         Credit::where('branch_id', $branchId)
             ->where('status', 1)
             ->where('due_date', '<', now())
@@ -182,16 +182,14 @@ class SyncPullService
 
         if ($since > 0) {
             $sinceDate = Carbon::createFromTimestamp($since - 60);
-            $query->where(function ($q) use ($sinceDate, $cutoff) {
-                // Pendientes: delta sync desde último corte
-                $q->where(function ($q1) use ($sinceDate) {
-                    $q1->where('status', 1)
-                       ->where('updated_at', '>', $sinceDate);
-                })
-                // Historial 90 días: siempre completo, sin importar since
-                ->orWhere(function ($q2) use ($cutoff) {
+            $query->where(function ($q) use ($sinceDate) {
+                // Pendientes: SIEMPRE todos, sin filtro de fecha
+                // (otra caja necesita saber que existen aunque no hayan cambiado)
+                $q->where('status', 1)
+                ->orWhere(function ($q2) use ($sinceDate) {
+                    // Cerrados/vencidos/cancelados: solo los modificados desde último sync
                     $q2->whereIn('status', [2, 3, 4])
-                       ->where('updated_at', '>=', $cutoff);
+                       ->where('updated_at', '>', $sinceDate);
                 });
             });
         } else {
@@ -218,7 +216,9 @@ class SyncPullService
 
     public function pullCreditPayments(int $branchId, int $since, int $page): array
     {
-        $query = CreditPayment::where('branch_id', $branchId);
+        // Eager load credit para que el accessor credit_folio funcione
+        $query = CreditPayment::with('credit')
+            ->where('branch_id', $branchId);
 
         if ($since > 0) {
             $query->where('updated_at', '>', Carbon::createFromTimestamp($since - 60));
@@ -237,7 +237,7 @@ class SyncPullService
 
     public function pullLayaways(int $branchId, int $since, int $page): array
     {
-        // Actualizar vencidos antes de responder
+        // Marcar vencidos antes de responder
         Layaway::where('branch_id', $branchId)
             ->where('status', 1)
             ->where('pickup_date', '<', now())
@@ -250,14 +250,11 @@ class SyncPullService
 
         if ($since > 0) {
             $sinceDate = Carbon::createFromTimestamp($since - 60);
-            $query->where(function ($q) use ($sinceDate, $cutoff) {
-                $q->where(function ($q1) use ($sinceDate) {
-                    $q1->where('status', 1)
-                       ->where('updated_at', '>', $sinceDate);
-                })
-                ->orWhere(function ($q2) use ($cutoff) {
+            $query->where(function ($q) use ($sinceDate) {
+                $q->where('status', 1)
+                ->orWhere(function ($q2) use ($sinceDate) {
                     $q2->whereIn('status', [2, 3, 4])
-                       ->where('updated_at', '>=', $cutoff);
+                       ->where('updated_at', '>', $sinceDate);
                 });
             });
         } else {
@@ -283,7 +280,9 @@ class SyncPullService
 
     public function pullLayawayPayments(int $branchId, int $since, int $page): array
     {
-        $query = LayawayPayment::where('branch_id', $branchId);
+        // Eager load layaway para que el accessor layaway_folio funcione
+        $query = LayawayPayment::with('layaway')
+            ->where('branch_id', $branchId);
 
         if ($since > 0) {
             $query->where('updated_at', '>', Carbon::createFromTimestamp($since - 60));

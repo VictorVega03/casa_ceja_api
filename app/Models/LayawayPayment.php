@@ -17,8 +17,15 @@ class LayawayPayment extends Model
         'updated_at' => 'datetime',
     ];
 
+    protected $appends = ['layaway_folio'];
+
     public function layaway()
     {
         return $this->belongsTo(Layaway::class);
+    }
+
+    public function getLayawayFolioAttribute(): ?string
+    {
+        return $this->layaway?->folio;
     }
 }

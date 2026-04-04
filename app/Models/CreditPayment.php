@@ -17,8 +17,15 @@ class CreditPayment extends Model
         'updated_at' => 'datetime',
     ];
 
+    protected $appends = ['credit_folio'];
+
     public function credit()
     {
         return $this->belongsTo(Credit::class);
+    }
+
+    public function getCreditFolioAttribute(): ?string
+    {
+        return $this->credit?->folio;
     }
 }
