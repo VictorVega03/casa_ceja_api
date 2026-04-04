@@ -205,8 +205,23 @@ class SyncPushService
                 'notes'            => $record['notes'] ?? null,
             ]);
 
+            $newTotalPaid = $credit->payments()->sum('amount_paid');
+
+            // Derivar status — el servidor es la fuente de verdad
+            // Prioridad: Cancelado > Pagado > Vencido > Pendiente
+            if ($credit->status == 4) {
+                $newStatus = 4; // Cancelado: no se toca
+            } elseif ($newTotalPaid >= $credit->total) {
+                $newStatus = 2; // Pagado
+            } elseif ($credit->due_date && now()->gt($credit->due_date)) {
+                $newStatus = 3; // Vencido
+            } else {
+                $newStatus = 1; // Pendiente
+            }
+
             $credit->update([
-                'total_paid' => $credit->payments()->sum('amount_paid'),
+                'total_paid' => $newTotalPaid,
+                'status'     => $newStatus,
             ]);
 
             return ['status' => 'accepted', 'folio' => $record['folio']];
@@ -291,8 +306,23 @@ class SyncPushService
                 'notes'            => $record['notes'] ?? null,
             ]);
 
+            $newTotalPaid = $layaway->payments()->sum('amount_paid');
+
+            // Derivar status — el servidor es la fuente de verdad
+            // Entregado (2) solo lo setea el cliente via MarkAsDeliveredAsync
+            if ($layaway->status == 4) {
+                $newStatus = 4; // Cancelado: no se toca
+            } elseif ($layaway->status == 2) {
+                $newStatus = 2; // Ya entregado: no se toca
+            } elseif ($layaway->pickup_date && now()->gt($layaway->pickup_date)) {
+                $newStatus = 3; // Vencido: pasó la fecha sin recogerse
+            } else {
+                $newStatus = 1; // Pendiente
+            }
+
             $layaway->update([
-                'total_paid' => $layaway->payments()->sum('amount_paid'),
+                'total_paid' => $newTotalPaid,
+                'status'     => $newStatus,
             ]);
 
             return ['status' => 'accepted', 'folio' => $record['folio']];

@@ -169,12 +169,40 @@ class SyncPullService
 
     public function pullCredits(int $branchId, int $since, int $page): array
     {
+        // Actualizar vencidos antes de responder
+        Credit::where('branch_id', $branchId)
+            ->where('status', 1)
+            ->where('due_date', '<', now())
+            ->update(['status' => 3, 'updated_at' => now()]);
+
+        $cutoff = now()->subDays(90);
+
         $query = Credit::with(['products', 'payments', 'customer'])
-            ->where('branch_id', $branchId)
-            ->where('status', 1);
+            ->where('branch_id', $branchId);
 
         if ($since > 0) {
-            $query->where('updated_at', '>', Carbon::createFromTimestamp($since - 60));
+            $sinceDate = Carbon::createFromTimestamp($since - 60);
+            $query->where(function ($q) use ($sinceDate, $cutoff) {
+                // Pendientes: delta sync desde último corte
+                $q->where(function ($q1) use ($sinceDate) {
+                    $q1->where('status', 1)
+                       ->where('updated_at', '>', $sinceDate);
+                })
+                // Historial 90 días: siempre completo, sin importar since
+                ->orWhere(function ($q2) use ($cutoff) {
+                    $q2->whereIn('status', [2, 3, 4])
+                       ->where('updated_at', '>=', $cutoff);
+                });
+            });
+        } else {
+            // Pull inicial: todos los pendientes + historial 90 días
+            $query->where(function ($q) use ($cutoff) {
+                $q->where('status', 1)
+                  ->orWhere(function ($q2) use ($cutoff) {
+                      $q2->whereIn('status', [2, 3, 4])
+                         ->where('updated_at', '>=', $cutoff);
+                  });
+            });
         }
 
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
@@ -209,12 +237,37 @@ class SyncPullService
 
     public function pullLayaways(int $branchId, int $since, int $page): array
     {
+        // Actualizar vencidos antes de responder
+        Layaway::where('branch_id', $branchId)
+            ->where('status', 1)
+            ->where('pickup_date', '<', now())
+            ->update(['status' => 3, 'updated_at' => now()]);
+
+        $cutoff = now()->subDays(90);
+
         $query = Layaway::with(['products', 'payments', 'customer'])
-            ->where('branch_id', $branchId)
-            ->where('status', 1);
+            ->where('branch_id', $branchId);
 
         if ($since > 0) {
-            $query->where('updated_at', '>', Carbon::createFromTimestamp($since - 60));
+            $sinceDate = Carbon::createFromTimestamp($since - 60);
+            $query->where(function ($q) use ($sinceDate, $cutoff) {
+                $q->where(function ($q1) use ($sinceDate) {
+                    $q1->where('status', 1)
+                       ->where('updated_at', '>', $sinceDate);
+                })
+                ->orWhere(function ($q2) use ($cutoff) {
+                    $q2->whereIn('status', [2, 3, 4])
+                       ->where('updated_at', '>=', $cutoff);
+                });
+            });
+        } else {
+            $query->where(function ($q) use ($cutoff) {
+                $q->where('status', 1)
+                  ->orWhere(function ($q2) use ($cutoff) {
+                      $q2->whereIn('status', [2, 3, 4])
+                         ->where('updated_at', '>=', $cutoff);
+                  });
+            });
         }
 
         $paginated = $query->orderBy('updated_at')->paginate(self::PER_PAGE, ['*'], 'page', $page);
