@@ -129,7 +129,13 @@ class SyncPushService
                 return ['status' => 'rejected', 'folio' => 'unknown', 'reason' => 'Folio requerido'];
             }
 
-            if (Credit::where('folio', $record['folio'])->exists()) {
+            $existing = Credit::where('folio', $record['folio'])->first();
+            if ($existing) {
+                // Actualizar campos que pueden cambiar: status, total_paid
+                $existing->update([
+                    'status'     => $record['status']     ?? $existing->status,
+                    'total_paid' => $record['total_paid'] ?? $existing->total_paid,
+                ]);
                 return ['status' => 'accepted', 'folio' => $record['folio']];
             }
 
@@ -139,7 +145,7 @@ class SyncPushService
                 'user_id'       => $record['user_id'],
                 'customer_id'   => !empty($record['customer'])
                     ? $this->ensureCustomer($record['customer'])
-                    : null,
+                    : ($record['customer_id'] ?? null),
                 'total'         => $record['total'] ?? 0,
                 'total_paid'    => $record['total_paid'] ?? 0,
                 'months_to_pay' => $record['months_to_pay'] ?? 0,
