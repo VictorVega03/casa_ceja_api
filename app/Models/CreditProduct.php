@@ -10,7 +10,7 @@ class CreditProduct extends Model
 
     protected $fillable = [
         'credit_id', 'product_id', 'barcode', 'product_name',
-        'quantity', 'unit_price', 'line_total', 'pricing_data'
+        'quantity', 'unit_price', 'line_total'
     ];
 
     public function credit()

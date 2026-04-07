@@ -133,8 +133,9 @@ class SyncPushService
             if ($existing) {
                 // Actualizar campos que pueden cambiar: status, total_paid
                 $existing->update([
-                    'status'     => $record['status']     ?? $existing->status,
-                    'total_paid' => $record['total_paid'] ?? $existing->total_paid,
+                    'status'           => $record['status']           ?? $existing->status,
+                    'total_paid'       => $record['total_paid']       ?? $existing->total_paid,
+                    'cash_close_folio' => $record['cash_close_folio'] ?? $existing->cash_close_folio,
                 ]);
                 return ['status' => 'accepted', 'folio' => $record['folio']];
             }
@@ -148,6 +149,7 @@ class SyncPushService
                     : ($record['customer_id'] ?? null),
                 'total'         => $record['total'] ?? 0,
                 'total_paid'    => $record['total_paid'] ?? 0,
+                'cash_close_folio' => $record['cash_close_folio'] ?? null,
                 'months_to_pay' => $record['months_to_pay'] ?? 0,
                 'credit_date'   => $this->parseTimestamp($record['credit_date']),
                 'due_date'      => $this->parseTimestamp($record['due_date'] ?? null),
@@ -164,8 +166,7 @@ class SyncPushService
                     'product_name' => $prod['product_name'],
                     'quantity'     => $prod['quantity'],
                     'unit_price'   => $prod['unit_price'] ?? 0,
-                    'line_total'   => $prod['line_total'] ?? 0,
-                    'pricing_data' => $prod['pricing_data'] ?? null,
+                    'line_total'   => $prod['line_total'] ?? 0,                   
                 ]);
             }
 
@@ -241,6 +242,7 @@ class SyncPushService
                 $existing->update([
                     'status'           => $record['status']           ?? $existing->status,
                     'total_paid'       => $record['total_paid']       ?? $existing->total_paid,
+                    'cash_close_folio' => $record['cash_close_folio'] ?? $existing->cash_close_folio,
                     'delivery_user_id' => $record['delivery_user_id'] ?? $existing->delivery_user_id,
                     'delivery_date'    => !empty($record['delivery_date'])
                                             ? $this->parseTimestamp($record['delivery_date'])
@@ -262,6 +264,7 @@ class SyncPushService
                     : ($record['customer_id'] ?? null),
                 'total'            => $record['total'] ?? 0,
                 'total_paid'       => $record['total_paid'] ?? 0,
+                'cash_close_folio' => $record['cash_close_folio'] ?? null,
                 'layaway_date'     => $this->parseTimestamp($record['layaway_date']),
                 'pickup_date'      => $this->parseTimestamp($record['pickup_date'] ?? null),
                 'delivery_date'    => $this->parseTimestamp($record['delivery_date'] ?? null),
@@ -278,8 +281,7 @@ class SyncPushService
                     'product_name' => $prod['product_name'],
                     'quantity'     => $prod['quantity'],
                     'unit_price'   => $prod['unit_price'] ?? 0,
-                    'line_total'   => $prod['line_total'] ?? 0,
-                    'pricing_data' => $prod['pricing_data'] ?? null,
+                    'line_total'   => $prod['line_total'] ?? 0,                   
                 ]);
             }
 

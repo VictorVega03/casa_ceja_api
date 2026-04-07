@@ -10,7 +10,7 @@ class LayawayProduct extends Model
 
     protected $fillable = [
         'layaway_id', 'product_id', 'barcode', 'product_name',
-        'quantity', 'unit_price', 'line_total', 'pricing_data'
+        'quantity', 'unit_price', 'line_total'
     ];
 
     public function layaway()
