@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Sync\PullController;
 use App\Http\Controllers\Api\Sync\PushController;
 use App\Http\Controllers\Api\OnDemand\StockController;
+use App\Http\Controllers\Api\Inventory\InventoryController;
 use Illuminate\Support\Facades\Route;
 
 // ── Health Check (sin autenticación) ────────────────────────
@@ -62,6 +63,14 @@ Route::prefix('v1')->middleware('user.token')->group(function () {
         Route::post('/layaway-payments', [PushController::class, 'layawayPayments']);
         Route::post('/stock-entries',    [PushController::class, 'stockEntries']);
         Route::post('/stock-outputs',    [PushController::class, 'stockOutputs']);
+    });
+
+    // ── INVENTARIO — operaciones en tiempo real (requieren conexión) ──
+    Route::prefix('inventory')->group(function () {
+        Route::post('/outputs',               [InventoryController::class, 'storeOutput']);
+        Route::get('/pending-transfers',      [InventoryController::class, 'pendingTransfers']);
+        Route::post('/confirm-transfer/{id}', [InventoryController::class, 'confirmTransfer']);
+        Route::get('/unconfirmed-alerts',     [InventoryController::class, 'unconfirmedAlerts']);
     });
 
     // ── ON-DEMAND — consultas en tiempo real ─────────────────

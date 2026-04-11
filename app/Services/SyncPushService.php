@@ -351,13 +351,22 @@ class SyncPushService
                 return ['status' => 'rejected', 'folio' => 'unknown', 'reason' => 'Folio requerido'];
             }
 
+            // Idempotencia — si ya existe, aceptar sin reprocessar
             if (StockEntry::where('folio', $record['folio'])->exists()) {
                 return ['status' => 'accepted', 'folio' => $record['folio']];
+            }
+
+            // Solo se aceptan entradas tipo PURCHASE por sync
+            // Las entradas tipo TRANSFER las crea el servidor internamente al procesar una salida
+            $entryType = $record['entry_type'] ?? StockEntry::TYPE_PURCHASE;
+            if ($entryType !== StockEntry::TYPE_PURCHASE) {
+                return ['status' => 'rejected', 'folio' => $record['folio'], 'reason' => 'Solo se aceptan entradas tipo PURCHASE por sync'];
             }
 
             $entry = StockEntry::create([
                 'folio'        => $record['folio'],
                 'folio_output' => $record['folio_output'] ?? null,
+                'entry_type'   => StockEntry::TYPE_PURCHASE,
                 'branch_id'    => $branchId,
                 'supplier_id'  => $record['supplier_id'] ?? null,
                 'user_id'      => $record['user_id'],
@@ -377,6 +386,7 @@ class SyncPushService
                     'line_total'   => $prod['line_total'] ?? 0,
                 ]);
 
+                // Suma stock en la sucursal que recibió la mercancía
                 ProductStock::addStock($prod['product_id'], $branchId, $prod['quantity']);
             }
 
@@ -391,16 +401,21 @@ class SyncPushService
                 return ['status' => 'rejected', 'folio' => 'unknown', 'reason' => 'Folio requerido'];
             }
 
+            // Idempotencia
             if (StockOutput::where('folio', $record['folio'])->exists()) {
                 return ['status' => 'accepted', 'folio' => $record['folio']];
             }
 
+            // NOTA: Las salidas tipo TRANSFER ya no pasan por sync/push.
+            // Se registran vía POST /api/v1/inventory/outputs directamente (requiere conexión).
+            // Este endpoint solo acepta salidas tipo OTHER (mermas, ajustes, etc.) sin destino.
             $output = StockOutput::create([
                 'folio'                 => $record['folio'],
                 'origin_branch_id'      => $branchId,
                 'destination_branch_id' => $record['destination_branch_id'] ?? null,
                 'user_id'               => $record['user_id'],
                 'type'                  => $record['type'] ?? 'OTHER',
+                'status'                => StockOutput::STATUS_CONFIRMED, // sin flujo de confirmación
                 'total_amount'          => $record['total_amount'] ?? 0,
                 'output_date'           => $this->parseTimestamp($record['output_date']),
                 'notes'                 => $record['notes'] ?? null,
@@ -417,11 +432,8 @@ class SyncPushService
                     'line_total'   => $prod['line_total'] ?? 0,
                 ]);
 
+                // Solo resta en origen — sin suma automática en destino
                 ProductStock::subtractStock($prod['product_id'], $branchId, $prod['quantity']);
-
-                if ($record['type'] === 'TRANSFER' && !empty($record['destination_branch_id'])) {
-                    ProductStock::addStock($prod['product_id'], $record['destination_branch_id'], $prod['quantity']);
-                }
             }
 
             return ['status' => 'accepted', 'folio' => $record['folio']];
