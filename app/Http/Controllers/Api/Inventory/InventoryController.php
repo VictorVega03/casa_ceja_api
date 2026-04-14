@@ -63,7 +63,7 @@ class InventoryController extends Controller
 
             // 2. Crear el registro de entrada TRANSFER pendiente en destino
             $entry = StockEntry::create([
-                'folio'        => 'ENT-' . $data['folio'], // folio derivado del de salida
+                'folio'        => $this->generateEntryFolio($data['destination_branch_id']),
                 'folio_output' => $data['folio'],
                 'entry_type'   => StockEntry::TYPE_TRANSFER,
                 'branch_id'    => $data['destination_branch_id'],
@@ -72,7 +72,6 @@ class InventoryController extends Controller
                 'total_amount' => $data['total_amount'],
                 'entry_date'   => $data['output_date'],
                 'notes'        => $data['notes'] ?? null,
-                // confirmed_at null = pendiente de confirmación
             ]);
 
             foreach ($data['products'] as $prod) {
@@ -252,5 +251,23 @@ class InventoryController extends Controller
         });
 
         return $this->success($data);
+    }
+
+    // ────────────────────────────────────────────────────────────
+    // Genera un folio de entrada con el mismo formato que el cliente:
+    // {branch:02d}{caja:02d}{fecha:dmY}E{seq:04d}
+    // Caja siempre es 00 para entradas de inventario.
+    // ────────────────────────────────────────────────────────────
+    private function generateEntryFolio(int $branchId): string
+    {
+        $prefix = sprintf('%02d00%sE', $branchId, now()->format('dmY'));
+
+        $last = StockEntry::where('folio', 'like', $prefix . '%')
+            ->orderByRaw('CAST(SUBSTR(folio, 14, 4) AS UNSIGNED) DESC')
+            ->value('folio');
+
+        $seq = $last ? ((int) substr($last, 13, 4)) + 1 : 1;
+
+        return $prefix . sprintf('%04d', $seq);
     }
 }
