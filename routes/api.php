@@ -39,6 +39,7 @@ Route::prefix('v1')->middleware('user.token')->group(function () {
         Route::get('/categories',       [PullController::class, 'categories']);
         Route::get('/units',            [PullController::class, 'units']);
         Route::get('/branches',         [PullController::class, 'branches']);
+        Route::get('/roles',            [PullController::class, 'roles']);
         Route::get('/users',            [PullController::class, 'users']);
         Route::get('/customers',        [PullController::class, 'customers']);
         Route::get('/suppliers',        [PullController::class, 'suppliers']);

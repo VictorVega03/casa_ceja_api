@@ -138,6 +138,13 @@ class PullController extends Controller
         });
     }
 
+    public function roles(Request $request)
+    {
+        return $this->handlePull($request, 'roles', function ($since, $page) {
+            return $this->pullService->pull(\App\Models\Role::class, $since, $page);
+        });
+    }
+
     private function handlePull(Request $request, string $entity, callable $fetcher)
     {
         $startTime = microtime(true);
