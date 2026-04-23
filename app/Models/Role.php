@@ -11,6 +11,10 @@ class Role extends Model
         'description', 'active'
     ];
 
+    protected $casts = [
+        'active' => 'boolean',
+    ];
+
     public function users()
     {
         return $this->hasMany(User::class, 'user_type');
