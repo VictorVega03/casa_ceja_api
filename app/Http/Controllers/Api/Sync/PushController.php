@@ -75,6 +75,13 @@ class PushController extends Controller
         });
     }
 
+    public function users(Request $request)
+    {
+        return $this->handlePushGlobal($request, 'users', function ($records) {
+            return $this->pushService->processUsers($records);
+        });
+    }
+
     private function handlePush(Request $request, string $entity, callable $processor)
     {
         $startTime = microtime(true);

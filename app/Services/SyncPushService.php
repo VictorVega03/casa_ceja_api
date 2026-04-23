@@ -571,4 +571,43 @@ class SyncPushService
             return null;
         }
     }
+
+    public function processUsers(array $records): array
+    {
+        $accepted = [];
+        $rejected = [];
+
+        foreach ($records as $record) {
+            try {
+                $username = $record['username'] ?? null;
+
+                if (empty($username)) {
+                    $rejected[] = ['folio' => 'unknown', 'reason' => 'Username requerido'];
+                    continue;
+                }
+
+                // Buscar por username (único y estable) en lugar de id
+                // para evitar conflictos cuando el id local difiere del servidor
+                \App\Models\User::updateOrCreate(
+                    ['username' => $username],
+                    [
+                        'name'      => $record['name']      ?? '',
+                        'email'     => $record['email']     ?? null,
+                        'phone'     => $record['phone']     ?? null,
+                        'password'  => $record['password']  ?? '',
+                        'user_type' => $record['user_type'] ?? 3,
+                        'branch_id' => $record['branch_id'] ?? null,
+                        'active'    => $record['active']    ?? true,
+                    ]
+                );
+
+                $accepted[] = $username;
+
+            } catch (\Exception $e) {
+                $rejected[] = ['folio' => $record['username'] ?? 'unknown', 'reason' => $e->getMessage()];
+            }
+        }
+
+        return ['accepted' => $accepted, 'rejected' => $rejected];
+    }
 }

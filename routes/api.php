@@ -64,6 +64,7 @@ Route::prefix('v1')->middleware('user.token')->group(function () {
         Route::post('/layaway-payments', [PushController::class, 'layawayPayments']);
         Route::post('/stock-entries',    [PushController::class, 'stockEntries']);
         Route::post('/stock-outputs',    [PushController::class, 'stockOutputs']);
+        Route::post('/users',            [PushController::class, 'users']);
     });
 
     // ── INVENTARIO — operaciones en tiempo real (requieren conexión) ──
