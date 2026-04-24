@@ -606,7 +606,7 @@ class SyncPushService
                         'email'     => $record['email']     ?? null,
                         'phone'     => $record['phone']     ?? null,
                         'username'  => $username,
-                        'password'  => $record['password']  ?? '',
+                        'password'  => str_replace('$2a$', '$2y$', $record['password'] ?? ''),
                         'user_type' => $record['user_type'] ?? 3,
                         'branch_id' => $record['branch_id'] ?? null,
                         'active'    => $record['active']    ?? true,

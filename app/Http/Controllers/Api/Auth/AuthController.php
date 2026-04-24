@@ -29,7 +29,8 @@ class AuthController extends Controller
                     ->where('active', true)
                     ->first();
 
-        if (!$user || !\Illuminate\Support\Facades\Hash::driver('bcrypt')->check($request->password, $user->password)) {
+        $storedHash = str_replace('$2a$', '$2y$', $user?->password ?? '');
+        if (!$user || !\Illuminate\Support\Facades\Hash::driver('bcrypt')->check($request->password, $storedHash)) {
             return $this->error('Credenciales inválidas', 401);
         }
 
