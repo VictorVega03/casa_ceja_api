@@ -588,7 +588,7 @@ class SyncPushService
 
                 // Buscar por username (único y estable) en lugar de id
                 // para evitar conflictos cuando el id local difiere del servidor
-                \App\Models\User::updateOrCreate(
+                $user = \App\Models\User::updateOrCreate(
                     ['username' => $username],
                     [
                         'name'      => $record['name']      ?? '',
@@ -600,6 +600,9 @@ class SyncPushService
                         'active'    => $record['active']    ?? true,
                     ]
                 );
+
+                // Generar token si no existe — necesario para que el usuario pueda hacer login
+                \App\Models\UserToken::getOrCreateForUser($user->id);
 
                 $accepted[] = $username;
 
