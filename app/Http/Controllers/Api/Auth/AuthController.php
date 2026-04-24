@@ -29,7 +29,7 @@ class AuthController extends Controller
                     ->where('active', true)
                     ->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !\Illuminate\Support\Facades\Hash::driver('bcrypt')->check($request->password, $user->password)) {
             return $this->error('Credenciales inválidas', 401);
         }
 

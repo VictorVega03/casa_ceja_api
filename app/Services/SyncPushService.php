@@ -586,24 +586,34 @@ class SyncPushService
                     continue;
                 }
 
-                // Buscar por username (único y estable) en lugar de id
-                // para evitar conflictos cuando el id local difiere del servidor
-                $user = \App\Models\User::updateOrCreate(
-                    ['username' => $username],
-                    [
+                $exists = \App\Models\User::where('username', $username)->first();
+
+                if ($exists) {
+                    // Actualizar todo EXCEPTO password
+                    $exists->update([
+                        'name'      => $record['name']      ?? $exists->name,
+                        'email'     => $record['email']     ?? $exists->email,
+                        'phone'     => $record['phone']     ?? $exists->phone,
+                        'user_type' => $record['user_type'] ?? $exists->user_type,
+                        'branch_id' => $record['branch_id'] ?? $exists->branch_id,
+                        'active'    => $record['active']    ?? $exists->active,
+                    ]);
+                    $user = $exists;
+                } else {
+                    // Crear con password (viene hasheado del cliente, forzar bcrypt check)
+                    $user = \App\Models\User::create([
                         'name'      => $record['name']      ?? '',
                         'email'     => $record['email']     ?? null,
                         'phone'     => $record['phone']     ?? null,
+                        'username'  => $username,
                         'password'  => $record['password']  ?? '',
                         'user_type' => $record['user_type'] ?? 3,
                         'branch_id' => $record['branch_id'] ?? null,
                         'active'    => $record['active']    ?? true,
-                    ]
-                );
+                    ]);
+                }
 
-                // Generar token si no existe — necesario para que el usuario pueda hacer login
                 \App\Models\UserToken::getOrCreateForUser($user->id);
-
                 $accepted[] = $username;
 
             } catch (\Exception $e) {
