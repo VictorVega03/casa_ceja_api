@@ -9,7 +9,7 @@ class CashMovement extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'cash_close_id', 'type', 'concept', 'amount', 'user_id'
+        'cash_close_id', 'type', 'concept', 'amount', 'user_id', 'created_at'
     ];
 
     public function cashClose()
