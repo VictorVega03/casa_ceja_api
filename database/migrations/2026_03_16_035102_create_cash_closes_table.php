@@ -23,8 +23,8 @@ return new class extends Migration
             $table->float('credit_cash')->default(0);
             $table->float('credit_total_created')->default(0);
             $table->float('layaway_total_created')->default(0);
-            $table->text('expenses')->nullable();
-            $table->text('income')->nullable();
+            $table->decimal('expenses', 10, 2)->default(0);
+            $table->decimal('income', 10, 2)->default(0);
             $table->float('surplus')->default(0);
             $table->float('expected_cash')->default(0);
             $table->float('total_sales')->default(0);
