@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('concept', 200)->nullable();
             $table->float('amount')->default(0);
             $table->integer('user_id')->nullable();
-            $table->timestamp('created_at')->nullable();
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 
