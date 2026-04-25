@@ -122,6 +122,7 @@ class SyncPushService
                         'concept'       => $mov['concept'] ?? null,
                         'amount'        => $mov['amount'],
                         'user_id'       => $mov['user_id'] ?? $record['user_id'],
+                        'created_at'    => isset($mov['created_at']) ? $mov['created_at'] : now(),
                     ]);
                 }
             }
