@@ -80,42 +80,50 @@ class SyncPushService
                 return ['status' => 'rejected', 'folio' => 'unknown', 'reason' => 'Folio requerido'];
             }
 
-            if (CashClose::where('folio', $record['folio'])->exists()) {
-                return ['status' => 'accepted', 'folio' => $record['folio']];
+            $close = CashClose::where('folio', $record['folio'])->first();
+
+            if (!$close) {
+                $close = CashClose::create([
+                    'folio'                 => $record['folio'],
+                    'branch_id'             => $branchId,
+                    'user_id'               => $record['user_id'],
+                    'opening_cash'          => $record['opening_cash'] ?? 0,
+                    'total_cash'            => $record['total_cash'] ?? 0,
+                    'total_debit_card'      => $record['total_debit_card'] ?? 0,
+                    'total_credit_card'     => $record['total_credit_card'] ?? 0,
+                    'total_checks'          => $record['total_checks'] ?? 0,
+                    'total_transfers'       => $record['total_transfers'] ?? 0,
+                    'layaway_cash'          => $record['layaway_cash'] ?? 0,
+                    'credit_cash'           => $record['credit_cash'] ?? 0,
+                    'credit_total_created'  => $record['credit_total_created'] ?? 0,
+                    'layaway_total_created' => $record['layaway_total_created'] ?? 0,
+                    'expenses'              => $record['expenses'] ?? null,
+                    'income'                => $record['income'] ?? null,
+                    'surplus'               => $record['surplus'] ?? 0,
+                    'expected_cash'         => $record['expected_cash'] ?? 0,
+                    'total_sales'           => $record['total_sales'] ?? 0,
+                    'notes'                 => $record['notes'] ?? null,
+                    'opening_date'          => $this->parseTimestamp($record['opening_date']),
+                    'close_date'            => $this->parseTimestamp($record['close_date'] ?? null),
+                ]);
             }
 
-            $close = CashClose::create([
-                'folio'                 => $record['folio'],
-                'branch_id'             => $branchId,
-                'user_id'               => $record['user_id'],
-                'opening_cash'          => $record['opening_cash'] ?? 0,
-                'total_cash'            => $record['total_cash'] ?? 0,
-                'total_debit_card'      => $record['total_debit_card'] ?? 0,
-                'total_credit_card'     => $record['total_credit_card'] ?? 0,
-                'total_checks'          => $record['total_checks'] ?? 0,
-                'total_transfers'       => $record['total_transfers'] ?? 0,
-                'layaway_cash'          => $record['layaway_cash'] ?? 0,
-                'credit_cash'           => $record['credit_cash'] ?? 0,
-                'credit_total_created'  => $record['credit_total_created'] ?? 0,
-                'layaway_total_created' => $record['layaway_total_created'] ?? 0,
-                'expenses'              => $record['expenses'] ?? null,
-                'income'                => $record['income'] ?? null,
-                'surplus'               => $record['surplus'] ?? 0,
-                'expected_cash'         => $record['expected_cash'] ?? 0,
-                'total_sales'           => $record['total_sales'] ?? 0,
-                'notes'                 => $record['notes'] ?? null,
-                'opening_date'          => $this->parseTimestamp($record['opening_date']),
-                'close_date'            => $this->parseTimestamp($record['close_date'] ?? null),
-            ]);
-
             foreach ($record['movements'] ?? [] as $mov) {
-                CashMovement::create([
-                    'cash_close_id' => $close->id,
-                    'type'          => $mov['type'],
-                    'concept'       => $mov['concept'] ?? null,
-                    'amount'        => $mov['amount'],
-                    'user_id'       => $mov['user_id'] ?? $record['user_id'],
-                ]);
+                $alreadyExists = CashMovement::where('cash_close_id', $close->id)
+                    ->where('type', $mov['type'])
+                    ->where('concept', $mov['concept'] ?? null)
+                    ->where('amount', $mov['amount'])
+                    ->exists();
+
+                if (!$alreadyExists) {
+                    CashMovement::create([
+                        'cash_close_id' => $close->id,
+                        'type'          => $mov['type'],
+                        'concept'       => $mov['concept'] ?? null,
+                        'amount'        => $mov['amount'],
+                        'user_id'       => $mov['user_id'] ?? $record['user_id'],
+                    ]);
+                }
             }
 
             return ['status' => 'accepted', 'folio' => $record['folio']];

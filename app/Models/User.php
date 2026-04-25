@@ -17,9 +17,7 @@ class User extends Authenticatable
         'updated_at' => 'datetime',
     ];
 
-    protected $hidden = [
-        'password'
-    ];
+    protected $hidden = [];
 
     public function branch()
     {
