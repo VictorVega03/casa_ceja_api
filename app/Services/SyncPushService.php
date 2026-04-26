@@ -393,6 +393,7 @@ class SyncPushService
                     'quantity'     => $prod['quantity'],
                     'unit_cost'    => $prod['unit_cost'] ?? 0,
                     'line_total'   => $prod['line_total'] ?? 0,
+                    'created_at'   => isset($prod['created_at']) ? $prod['created_at'] : now(),
                 ]);
 
                 // Suma stock en la sucursal que recibió la mercancía
@@ -439,6 +440,7 @@ class SyncPushService
                     'quantity'     => $prod['quantity'],
                     'unit_cost'    => $prod['unit_cost'] ?? 0,
                     'line_total'   => $prod['line_total'] ?? 0,
+                    'created_at'   => isset($prod['created_at']) ? $prod['created_at'] : now(),
                 ]);
 
                 // Solo resta en origen — sin suma automática en destino

@@ -10,7 +10,7 @@ class OutputProduct extends Model
 
     protected $fillable = [
         'output_id', 'product_id', 'barcode', 'product_name',
-        'quantity', 'unit_cost', 'line_total'
+        'quantity', 'unit_cost', 'line_total', 'created_at'
     ];
 
     public function output()
