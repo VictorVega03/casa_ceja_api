@@ -84,6 +84,7 @@ class InventoryController extends Controller
                     'quantity'     => $prod['quantity'],
                     'unit_cost'    => $prod['unit_cost'],
                     'line_total'   => $prod['line_total'],
+                    'created_at'   => isset($prod['created_at']) ? $prod['created_at'] : now(),
                 ]);
 
                 // Detalle en la entrada pendiente (cantidades originales enviadas)
